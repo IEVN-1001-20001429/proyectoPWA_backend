@@ -30,9 +30,6 @@ def registrar_usuario():
     except Exception as ex:
         return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
 
-def pagina_no_encontrada(error):
-    return "<h1>Pagina no encontrada</h1>"
-    
 #Metodo para detectar usuarios
 def leer_usuarios_db(email_user, password):
     try:
@@ -51,6 +48,7 @@ def leer_usuarios_db(email_user, password):
     except Exception as ex:
         return jsonify({'mensaje':'error {}'.format(ex), 'exito':True})
 
+#Metodo para obtener el usuario para su validacion
 @app.route('/user',methods=['GET'])
 def leer_alumno():
     try:
@@ -61,7 +59,26 @@ def leer_alumno():
         if user != None:
             return jsonify({'mensaje':'Usuario encontrado', 'exito':True})
         else:
-            return jsonify({'mensaje':'Usuario no encontrado', 'exito':False})        
+            return jsonify({'mensaje':'Usuario no encontrado', 'exito':False})  
+              
+    except Exception as ex:
+        return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
+    
+#Metodo para obtener las peliculas
+@app.route('/movies',methods=['GET'])
+def obtener_peliculas():
+    try:
+        cursor = con.connection.cursor()
+        sql = 'select * from movies'
+        cursor.execute(sql)
+        datos=cursor.fetchall()
+        peliculas=[]
+        for fila in datos:
+            pelicula={'id':fila[0],'titulo':fila[1],'fecha':fila[2],'genero':fila[3],'sinopsis':fila[4],'estudio':fila[5], 'banner':fila[6]}
+            peliculas.append(pelicula)
+            print(pelicula)
+        return jsonify({'peliculas':peliculas, 'mensaje':'lista de Peliculas', 'exito':True})
+              
     except Exception as ex:
         return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
 
