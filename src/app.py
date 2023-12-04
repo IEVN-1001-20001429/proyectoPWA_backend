@@ -82,6 +82,55 @@ def obtener_peliculas():
     except Exception as ex:
         return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
 
+#Metodo para registrar una pelicula
+@app.route('/movie_registration',methods=['POST'])
+def registrar_pelicula():
+    try:
+        datosPelicula = request.get_json()
+        cursor=con.connection.cursor()
+        sql="""INSERT INTO movies(title,date,genre,description,studio,banner)
+        VALUES('{0}','{1}','{2}','{3}','{4}','{5}')""".format(datosPelicula.get('titulo'),datosPelicula.get('fecha'),datosPelicula.get('genero'),datosPelicula.get('sinopsis'),datosPelicula.get('estudio'),datosPelicula.get('imagen'))
+        cursor.execute(sql)
+        con.connection.commit()
+        return jsonify({'mensaje':'Pelicula registrada', 'exito':True})
+                                                        
+    except Exception as ex:
+        return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
+    
+#Metodo para borrar una Pelicula
+@app.route('/movie_delete',methods=['POST'])
+def eliminar_pelicula():
+    try:
+        datosPelicula = request.get_json()
+        cursor=con.connection.cursor()
+        sql="""DELETE FROM movies WHERE id_movie = {0}""".format(datosPelicula.get('id'))
+        cursor.execute(sql)
+        con.connection.commit()
+        return jsonify({'mensaje':'Pelicula eliminada', 'exito':True})
+                                                        
+    except Exception as ex:
+        return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
+    
+#Metodo para modificar una Pelicula
+@app.route('/movie_edit',methods=['POST'])
+def modificar_pelicula():
+    try:
+        datosPelicula = request.get_json()
+        cursor=con.connection.cursor()
+        sql="""UPDATE movies SET title='{0}', date={1}, genre='{2}', description='{3}', studio='{4}', banner='{5}' WHERE id_movie = {6}
+        """.format(datosPelicula.get('titulo'),datosPelicula.get('fecha'),datosPelicula.get('genero'),datosPelicula.get('sinopsis'),datosPelicula.get('estudio'),datosPelicula.get('imagen'),datosPelicula.get('id'),)
+        cursor.execute(sql)
+        con.connection.commit()
+        return jsonify({'mensaje':'Pelicula eliminada', 'exito':True})
+                                                        
+    except Exception as ex:
+        return jsonify({'mensaje':'error {}'.format(ex), 'exito':False})
+
+@app.route('/subir-archivo',methods=['POST'])
+def guardar_imagen():
+
+    return jsonify({'error': 'No se proporcionó ningún archivo'}), 400
+
 def pagina_no_encontrada(error):
     return "<h1>Pagina no encontrada</h1>"
 
